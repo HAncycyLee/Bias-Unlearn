@@ -1,0 +1,20 @@
+{
+  "use_lora": "True",
+  "reinit": "False",
+  "mix_anti": "True",
+  "epoch": "3",
+  "max_unlearn_steps": "1000",
+  "beta": "0.1",
+  "ster_weight": "0.5",
+  "anti_weight": "0.3",
+  "kl_weight": "0.2",
+  "lr": "2e-05",
+  "max_ster_loss": "100",
+  "model_name": "openai-community/gpt2-large",
+  "model_save_dir": "gpt-m-new",
+  "save_every": "100",
+  "eval_every": "30",
+  "log_file": "logs/gpt-m-new.rank0.log",
+  "name_head": "",
+  "target_modules": "['attn.c_proj', 'attn.c_attn']"
+}

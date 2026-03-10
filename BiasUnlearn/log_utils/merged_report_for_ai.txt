@@ -1,0 +1,109 @@
+================================================
+AI 分析报告: 2026-03-09 05:24:19
+================================================
+
+### 1. 配置与参数
+[Config] use_lora: True
+[Config] reinit: False
+[Config] mix_anti: True
+[Config] epoch: 3
+[Config] max_unlearn_steps: 1000
+[Config] beta: 0.1
+[Config] ster_weight: 0.5
+[Config] anti_weight: 0.3
+[Config] kl_weight: 0.2
+[Config] lr: 2e-05
+[Config] max_ster_loss: 100
+[Config] model_name: openai-community/gpt2-large
+[Config] model_save_dir: gpt-m-new
+[Config] save_every: 100
+[Config] eval_every: 30
+[Config] log_file: logs/gpt-m-new.rank0.log
+[Config] name_head:
+[Config] target_modules: ['attn.c_proj', 'attn.c_attn']
+
+### 2. LoRA 配置
+LoraConfig(task_type=<TaskType.CAUSAL_LM: 'CAUSAL_LM'>, peft_type=<PeftType.LORA: 'LORA'>, auto_mapping=None, peft_version='0.18.1', base_model_name_or_path=None, revision=None, inference_mode=False, r=8, target_modules={'attn.c_proj', 'attn.c_attn'}, exclude_modules=None, lora_alpha=16, lora_dropout=0.1, fan_in_fan_out=False, bias='none', use_rslora=False, modules_to_save=None, init_lora_weights=True, layers_to_transform=None, layers_pattern=None, rank_pattern={}, alpha_pattern={}, megatron_config=None, megatron_core='megatron.core', trainable_token_indices=None, loftq_config={}, eva_config=None, corda_config=None, use_dora=False, alora_invocation_tokens=None, use_qalora=False, qalora_group_size=16, layer_replication=None, runtime_config=LoraRuntimeConfig(ephemeral_gpu_offload=False), lora_bias=False, target_parameters=None, arrow_config=None, ensure_weight_tying=False)
+2026-03-09-03-08,128 root INFO num_training_steps,1000
+2026-03-09-03-08,129 root INFO len(ster_dataloader) * args.epoch23928
+
+### 3. 系统日志/警告
+[System] [W309 03:06:36.584060188 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+[System] [W309 03:06:36.584483166 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+[System] [W309 03:06:36.605763727 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+[System] [W309 03:06:36.625579768 CUDAAllocatorConfig.h:28] Warning: expandable_segments not supported on this platform (function operator())
+[System] /workspaces/AI_Bias/venv_bias/lib/python3.10/site-packages/peft/tuners/lora/layer.py:2285: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+[System] /workspaces/AI_Bias/venv_bias/lib/python3.10/site-packages/peft/tuners/lora/layer.py:2285: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+[System] /workspaces/AI_Bias/venv_bias/lib/python3.10/site-packages/peft/tuners/lora/layer.py:2285: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+[System] /workspaces/AI_Bias/venv_bias/lib/python3.10/site-packages/peft/tuners/lora/layer.py:2285: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+[System] [W309 03:29:36.628682522 ProcessGroupNCCL.cpp:1250] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+
+### 4. 训练进度 (每 20 个 batch 抽样一次 + 强制保留末尾)
+batch: 0, lr: 0.00000800 ster_lm: 5.101, ster_ref_lm: 5.010, neg_log_ratio: 0.090, loss_npo(w): 6.886, anti(w): 1.121, kl(w): 1.232, total: 9.239
+batch: 20, lr: 0.00001882 ster_lm: 5.381, ster_ref_lm: 5.440, neg_log_ratio: -0.059, loss_npo(w): 6.961, anti(w): 1.205, kl(w): 1.232, total: 9.398
+batch: 40, lr: 0.00001755 ster_lm: 4.353, ster_ref_lm: 4.225, neg_log_ratio: 0.128, loss_npo(w): 6.868, anti(w): 1.318, kl(w): 1.258, total: 9.444
+batch: 60, lr: 0.00001620 ster_lm: 4.016, ster_ref_lm: 3.686, neg_log_ratio: 0.329, loss_npo(w): 6.768, anti(w): 1.058, kl(w): 1.266, total: 9.091
+batch: 80, lr: 0.00001486 ster_lm: 4.878, ster_ref_lm: 4.249, neg_log_ratio: 0.629, loss_npo(w): 6.622, anti(w): 1.085, kl(w): 1.206, total: 8.913
+batch: 100, lr: 0.00001600 ster_lm: 3.325, ster_ref_lm: 3.291, neg_log_ratio: 0.034, loss_npo(w): 6.915, anti(w): 1.240, kl(w): 1.258, total: 9.412
+batch: 120, lr: 0.00001947 ster_lm: 4.253, ster_ref_lm: 4.137, neg_log_ratio: 0.116, loss_npo(w): 6.874, anti(w): 1.276, kl(w): 1.217, total: 9.367
+batch: 140, lr: 0.00001894 ster_lm: 3.110, ster_ref_lm: 3.022, neg_log_ratio: 0.088, loss_npo(w): 6.888, anti(w): 0.838, kl(w): 1.282, total: 9.008
+batch: 160, lr: 0.00001600 ster_lm: 3.771, ster_ref_lm: 3.584, neg_log_ratio: 0.188, loss_npo(w): 6.838, anti(w): 1.293, kl(w): 1.243, total: 9.374
+batch: 180, lr: 0.00001947 ster_lm: 4.230, ster_ref_lm: 4.086, neg_log_ratio: 0.144, loss_npo(w): 6.860, anti(w): 1.324, kl(w): 1.227, total: 9.411
+batch: 200, lr: 0.00001894 ster_lm: 2.998, ster_ref_lm: 2.772, neg_log_ratio: 0.226, loss_npo(w): 6.819, anti(w): 1.337, kl(w): 1.231, total: 9.387
+batch: 220, lr: 0.00001840 ster_lm: 5.854, ster_ref_lm: 5.451, neg_log_ratio: 0.402, loss_npo(w): 6.732, anti(w): 1.431, kl(w): 1.209, total: 9.372
+batch: 240, lr: 0.00001600 ster_lm: 5.092, ster_ref_lm: 4.669, neg_log_ratio: 0.423, loss_npo(w): 6.722, anti(w): 1.156, kl(w): 1.249, total: 9.127
+batch: 260, lr: 0.00001947 ster_lm: 4.922, ster_ref_lm: 4.527, neg_log_ratio: 0.395, loss_npo(w): 6.736, anti(w): 1.121, kl(w): 1.230, total: 9.087
+batch: 280, lr: 0.00001894 ster_lm: 4.972, ster_ref_lm: 4.120, neg_log_ratio: 0.852, loss_npo(w): 6.514, anti(w): 1.245, kl(w): 1.225, total: 8.984
+batch: 300, lr: 0.00001840 ster_lm: 3.655, ster_ref_lm: 3.060, neg_log_ratio: 0.595, loss_npo(w): 6.639, anti(w): 1.533, kl(w): 1.279, total: 9.450
+batch: 320, lr: 0.00001600 ster_lm: 4.534, ster_ref_lm: 3.655, neg_log_ratio: 0.879, loss_npo(w): 6.501, anti(w): 1.501, kl(w): 1.254, total: 9.256
+batch: 340, lr: 0.00001947 ster_lm: 5.037, ster_ref_lm: 4.382, neg_log_ratio: 0.654, loss_npo(w): 6.610, anti(w): 1.199, kl(w): 1.285, total: 9.094
+batch: 360, lr: 0.00001894 ster_lm: 6.453, ster_ref_lm: 4.884, neg_log_ratio: 1.568, loss_npo(w): 6.178, anti(w): 1.332, kl(w): 1.240, total: 8.750
+batch: 380, lr: 0.00001840 ster_lm: 4.965, ster_ref_lm: 3.905, neg_log_ratio: 1.060, loss_npo(w): 6.416, anti(w): 1.680, kl(w): 1.220, total: 9.316
+batch: 400, lr: 0.00001600 ster_lm: 5.661, ster_ref_lm: 4.066, neg_log_ratio: 1.595, loss_npo(w): 6.166, anti(w): 1.430, kl(w): 1.284, total: 8.879
+batch: 420, lr: 0.00001841 ster_lm: 6.993, ster_ref_lm: 4.691, neg_log_ratio: 2.302, loss_npo(w): 5.847, anti(w): 1.793, kl(w): 1.242, total: 8.882
+batch: 440, lr: 0.00001680 ster_lm: 6.043, ster_ref_lm: 3.704, neg_log_ratio: 2.338, loss_npo(w): 5.830, anti(w): 1.824, kl(w): 1.261, total: 8.915
+batch: 460, lr: 0.00001520 ster_lm: 6.721, ster_ref_lm: 3.832, neg_log_ratio: 2.889, loss_npo(w): 5.591, anti(w): 1.897, kl(w): 1.274, total: 8.762
+batch: 480, lr: 0.00001600 ster_lm: 6.380, ster_ref_lm: 3.199, neg_log_ratio: 3.181, loss_npo(w): 5.467, anti(w): 1.844, kl(w): 1.414, total: 8.725
+batch: 500, lr: 0.00001841 ster_lm: 7.533, ster_ref_lm: 4.334, neg_log_ratio: 3.199, loss_npo(w): 5.459, anti(w): 2.237, kl(w): 1.314, total: 9.010
+batch: 520, lr: 0.00001680 ster_lm: 8.237, ster_ref_lm: 4.448, neg_log_ratio: 3.789, loss_npo(w): 5.216, anti(w): 2.522, kl(w): 1.360, total: 9.097
+batch: 540, lr: 0.00001520 ster_lm: 10.307, ster_ref_lm: 6.880, neg_log_ratio: 3.427, loss_npo(w): 5.364, anti(w): 2.223, kl(w): 1.350, total: 8.937
+batch: 560, lr: 0.00001600 ster_lm: 10.621, ster_ref_lm: 5.868, neg_log_ratio: 4.753, loss_npo(w): 4.835, anti(w): 2.441, kl(w): 1.359, total: 8.635
+batch: 580, lr: 0.00001841 ster_lm: 8.475, ster_ref_lm: 2.922, neg_log_ratio: 5.553, loss_npo(w): 4.536, anti(w): 2.217, kl(w): 1.338, total: 8.090
+batch: 600, lr: 0.00001680 ster_lm: 9.092, ster_ref_lm: 3.335, neg_log_ratio: 5.757, loss_npo(w): 4.462, anti(w): 2.842, kl(w): 1.364, total: 8.667
+batch: 620, lr: 0.00001520 ster_lm: 9.255, ster_ref_lm: 4.395, neg_log_ratio: 4.860, loss_npo(w): 4.794, anti(w): 3.669, kl(w): 1.400, total: 9.863
+batch: 640, lr: 0.00001600 ster_lm: 10.763, ster_ref_lm: 4.387, neg_log_ratio: 6.376, loss_npo(w): 4.243, anti(w): 2.879, kl(w): 1.369, total: 8.492
+batch: 660, lr: 0.00001841 ster_lm: 10.113, ster_ref_lm: 3.810, neg_log_ratio: 6.302, loss_npo(w): 4.269, anti(w): 3.209, kl(w): 1.426, total: 8.903
+batch: 680, lr: 0.00001680 ster_lm: 9.353, ster_ref_lm: 5.089, neg_log_ratio: 4.264, loss_npo(w): 5.025, anti(w): 3.059, kl(w): 1.413, total: 9.497
+batch: 700, lr: 0.00001520 ster_lm: 11.914, ster_ref_lm: 4.233, neg_log_ratio: 7.681, loss_npo(w): 3.811, anti(w): 3.561, kl(w): 1.411, total: 8.783
+batch: 720, lr: 0.00001600 ster_lm: 10.752, ster_ref_lm: 3.099, neg_log_ratio: 7.654, loss_npo(w): 3.820, anti(w): 2.815, kl(w): 1.408, total: 8.042
+batch: 740, lr: 0.00001841 ster_lm: 10.874, ster_ref_lm: 3.895, neg_log_ratio: 6.979, loss_npo(w): 4.039, anti(w): 3.333, kl(w): 1.399, total: 8.771
+batch: 760, lr: 0.00001680 ster_lm: 12.316, ster_ref_lm: 4.077, neg_log_ratio: 8.240, loss_npo(w): 3.637, anti(w): 3.223, kl(w): 1.401, total: 8.261
+batch: 780, lr: 0.00001520 ster_lm: 9.946, ster_ref_lm: 5.015, neg_log_ratio: 4.931, loss_npo(w): 4.767, anti(w): 3.374, kl(w): 1.470, total: 9.611
+batch: 800, lr: 0.00001280 ster_lm: 12.072, ster_ref_lm: 3.880, neg_log_ratio: 8.192, loss_npo(w): 3.652, anti(w): 3.427, kl(w): 1.395, total: 8.474
+batch: 820, lr: 0.00000952 ster_lm: 10.239, ster_ref_lm: 3.342, neg_log_ratio: 6.897, loss_npo(w): 4.066, anti(w): 3.422, kl(w): 1.447, total: 8.935
+batch: 840, lr: 0.00000295 ster_lm: 10.416, ster_ref_lm: 4.792, neg_log_ratio: 5.625, loss_npo(w): 4.509, anti(w): 3.696, kl(w): 1.384, total: 9.589
+batch: 860, lr: 0.00001280 ster_lm: 12.329, ster_ref_lm: 4.530, neg_log_ratio: 7.799, loss_npo(w): 3.774, anti(w): 3.363, kl(w): 1.414, total: 8.551
+batch: 880, lr: 0.00000624 ster_lm: 13.641, ster_ref_lm: 3.172, neg_log_ratio: 10.469, loss_npo(w): 3.009, anti(w): 3.112, kl(w): 1.392, total: 7.512
+batch: 900, lr: 0.00001280 ster_lm: 12.296, ster_ref_lm: 4.086, neg_log_ratio: 8.210, loss_npo(w): 3.647, anti(w): 3.211, kl(w): 1.392, total: 8.250
+batch: 920, lr: 0.00000952 ster_lm: 11.619, ster_ref_lm: 5.554, neg_log_ratio: 6.065, loss_npo(w): 4.352, anti(w): 3.275, kl(w): 1.389, total: 9.016
+batch: 940, lr: 0.00000295 ster_lm: 12.510, ster_ref_lm: 3.572, neg_log_ratio: 8.938, loss_npo(w): 3.429, anti(w): 3.372, kl(w): 1.449, total: 8.250
+batch: 960, lr: 0.00001280 ster_lm: 13.044, ster_ref_lm: 3.565, neg_log_ratio: 9.479, loss_npo(w): 3.276, anti(w): 3.606, kl(w): 1.433, total: 8.314
+batch: 980, lr: 0.00000624 ster_lm: 10.503, ster_ref_lm: 4.560, neg_log_ratio: 5.943, loss_npo(w): 4.395, anti(w): 3.547, kl(w): 1.400, total: 9.342
+batch: 999, lr: 0.00000000 ster_lm: 11.913, ster_ref_lm: 3.380, neg_log_ratio: 8.534, loss_npo(w): 3.549, anti(w): 3.134, kl(w): 1.407, total: 8.090
+
+### 5. 评估分数趋势
+[Evaluation Metrics] ['SS Gender', 'SS Profession', 'SS Race', 'SS Religion', 'SS Score', 'LM Score', 'ICAT Score']
+[Scores] 70.54	63.01	67.06	61.61	66.72	94.06	62.62
+[Scores] 71.01	63.01	68.17	60.46	67.11	93.88	61.76
+[Scores] 66.71	64.2	65.98	64.28	65.63	93.34	64.17
+[Scores] 64.21	66.34	64.43	64.28	64.8	92.88	65.39
+[Scores] 61.2	64.01	62.71	59.49	62.17	90.74	68.66
+[Scores] 57.87	55.59	64.17	60.46	59.54	88.37	71.51
+[Scores] 60.37	56.11	54.16	55.49	56.91	86.95	74.93
+[Scores] 56.67	57.3	54.98	53.79	56.0	85.25	75.02
+[Scores] 52.11	54.22	53.59	53.79	53.25	84.56	79.06
+[Scores] 52.11	53.74	52.74	51.49	52.63	85.0	80.52
+[Scores] 52.11	53.74	52.74	50.34	52.51	84.8	80.54
+[Scores] 51.67	53.03	52.74	50.34	52.19	84.89	81.16
+[Scores] 51.67	53.03	52.74	50.34	52.19	84.8	81.09
+[Scores] 51.67	53.03	53.43	50.34	52.41	85.08	80.98

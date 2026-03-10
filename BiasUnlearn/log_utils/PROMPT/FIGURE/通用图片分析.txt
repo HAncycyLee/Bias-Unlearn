@@ -1,0 +1,59 @@
+请基于我提供的训练趋势图、精简日志和实验配置，分析这个 bias unlearning 实验的训练过程，并给出下一轮实验建议。
+
+要求：
+- 逐图解释这些图反映了什么训练现象
+- 分析 total / npo / anti / kl / neg_log_ratio 之间的关系
+- 判断是否存在 over-unlearning、language ability degradation、reverse bias risk 等问题
+- 结合 SS Score、LM Score、ICAT Score 分析 trade-off
+- 判断最佳 checkpoint 大致位于哪个区间，并说明理由
+- 给出下一轮实验建议，具体到参数、范围、优先级和消融设计
+- 区分“图中直接支持的结论”和“基于经验的推断”
+- 如果证据不足，要明确说明缺失了什么
+
+请按以下结构输出：
+1. 总体结论
+2. 逐图分析
+3. 主要问题
+4. 最佳 checkpoint
+5. 下一轮实验建议
+6. 建议做的消融/对照实验
+7. 不确定性与缺失信息
+
+---
+
+补充信息：
+- 我的目标优先级是：[例如 优先保留LM / 优先降低bias / 优先提高ICAT]
+- 当前图包括：[列出图名]
+- 当前配置摘要：[贴配置]
+- 我最想回答的问题是：[例如 是否过度unlearning、最佳checkpoint在哪、下一轮先调哪个参数]
+
+---
+
+Using the training plots, compact logs, and experiment configuration I provide, analyze this bias unlearning experiment and recommend the next round of experiments.
+
+Requirements:
+- Explain what each plot reveals about the training process
+- Analyze the relationship among total / npo / anti / kl / neg_log_ratio
+- Determine whether there are signs of over-unlearning, language ability degradation, or reverse bias risk
+- Use SS Score, LM Score, and ICAT Score to assess the trade-off
+- Identify the approximate best checkpoint range and explain why
+- Propose next-step experiments with specific parameters, value ranges, priorities, and ablations
+- Separate conclusions directly supported by the figures from expert inference
+- If evidence is insufficient, explicitly state what is missing
+
+Return the answer in this structure:
+1. Overall conclusion
+2. Plot-by-plot analysis
+3. Main issues
+4. Best checkpoint
+5. Next-round experiment suggestions
+6. Suggested ablation/control experiments
+7. Uncertainty and missing information
+
+---
+
+Additional context:
+- My priority is: [e.g., preserve LM / reduce bias / maximize ICAT]
+- The figures included are: [list plot names]
+- Current configuration summary: [paste config]
+- The main question I want answered is: [e.g., whether this is over-unlearning, where the best checkpoint is, which parameter to tune first]
