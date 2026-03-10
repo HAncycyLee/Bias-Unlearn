@@ -30,6 +30,8 @@ from Evaluator import BiasEvaluator,ScoreEvaluator
 from torch.optim.lr_scheduler import SequentialLR, ConstantLR, CosineAnnealingLR,LinearLR
 from loss import lm_loss, compute_kl, DynamicWeightAdapter
 
+from pathlib import Path # Hancy：用于统一路径管理
+
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 accelerator = Accelerator()
 device = accelerator.device
@@ -46,6 +48,13 @@ target_map = {"gpt2": ["attn.c_proj", "attn.c_attn"],
               "meta": ['up_proj', 'k_proj', 'o_proj', 'gate_proj', 'q_proj', 'v_proj', 'down_proj']}
 bia_type = ['gender', 'profession', 'race', 'religion']
 type2id = {'gender': 0, 'profession': 1, 'race': 2, 'religion': 3}
+
+# 记录日志的函数，追加写入而不是覆盖
+def append_metric(path, record):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 def eval(evaluator,model):
     results = evaluator.evaluate(model)
@@ -115,6 +124,19 @@ def train(first_turn,e1poch,idx,ster,anti,unrelate,model,tokenizer,device,pretra
             logging.info(stats)
             print(stats)
             idx += 1
+            # Hancy：这是新增的用于记录的部分
+            append_metric(metrics_path, {
+                        "event": "train_step",
+                        "step": idx,
+                        "lr": float(current_lr),
+                        "ster_loss_raw": float(ster_loss.detach().mean().item()) if hasattr(ster_loss, "detach") else float(ster_loss),
+                        "anti_loss_raw": float(anti_loss.detach().mean().item()) if hasattr(anti_loss, "detach") else float(anti_loss),
+                        "kl_loss_raw": float(kl_loss.detach().mean().item()) if hasattr(kl_loss, "detach") else float(kl_loss),
+                        "ster_weight": float(args.ster_weight),
+                        "anti_weight": float(args.anti_weight),
+                        "kl_weight": float(args.kl_weight),
+                        "beta": float(args.beta),
+                    })           
 
             # Save model.
 
@@ -277,6 +299,20 @@ def main(args) -> None:
         else:
             scores, idx = train(first_turn, epoch, idx, current_ster, current_anti, unrelate_dataloader, model,tokenizer, device, pretrained_model, evaluator, optimizer, lr_scheduler, pre_res)
 
+        # Hancy：此处新补充，当前训练代码直接拿 scores[:4] 算 gap，正好只用到了前四个域级 SS
+        score_names = [
+            "ss_gender", "ss_profession", "ss_race", "ss_religion",
+            "ss_overall", "lm_overall", "icat_overall"
+        ]
+        score_dict = {k: float(v) for k, v in zip(score_names, scores)}
+
+        append_metric(metrics_path, {
+            "event": "eval",
+            "step": idx,
+            **score_dict,
+        })
+        #####
+
         pre_res=scores
         bases = [49,49,49,48]
 
@@ -302,6 +338,17 @@ def main(args) -> None:
             reverse = True
         else:
             reverse = False
+
+        # Hancy：下面是新补充内容，用于在selected_category和reverse确定后做出记录
+        append_metric(metrics_path, {
+            "event": "routing",
+            "step": idx,
+            "gaps": gaps,
+            "selected_category": selected_category,
+            "reverse": reverse,
+        })    
+        #####
+
         if max(gaps)>5:
             fineturn_lr=args.lr
             fineturn_steps=3000 if idx<400 else 1000
@@ -409,7 +456,7 @@ if __name__ == "__main__":
     # 此处是gpt给出的修改多进程写同日志文件问题的方案
     rank = int(os.environ.get("RANK", "0"))
     args.log_file = args.log_file.replace(".log", f".rank{rank}.log")
-    ###
+    #####
 
     logging.basicConfig(
         filename=args.log_file,
@@ -423,6 +470,9 @@ if __name__ == "__main__":
 
     # 训练，且在训练后释放集群
     try:
+        # Hancy：这里是用于生成路径的部分，新写
+        metrics_path = f"log/{args.model_save_dir}_metrics.jsonl"
+        #####
         main(args)
     except Exception as e:
         logging.error(f"Error during training: {e}")

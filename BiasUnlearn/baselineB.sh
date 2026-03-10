@@ -1,0 +1,18 @@
+# 论文附录基线 B
+exp=gpt-m-new
+export HF_ENDPOINT=https://hf-mirror.com
+export HF_HOME=~/.cache/huggingface
+CUDA_VISIBLE_DEVICES=0 accelerate launch train.py \
+  --model_name openai-community/gpt2 \
+  --use_lora \
+  --model_save_dir ${exp}_paper \
+  --log_file logs/${exp}_paper.log \
+  --lr 5e-5 \
+  --max_unlearn_steps 300 \
+  --save_every 50 \
+  --ster_batch_size 4 \
+  --batch_size 28 \
+  --ster_weight 0.4 \
+  --anti_weight 0.4 \
+  --kl_weight 0.2 \
+  --mix_anti
