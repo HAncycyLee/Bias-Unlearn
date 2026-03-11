@@ -471,7 +471,7 @@ if __name__ == "__main__":
     # 训练，且在训练后释放集群
     try:
         # Hancy：这里是用于生成路径的部分，新写
-        metrics_path = f"log/{args.model_save_dir}_metrics.jsonl"
+        metrics_path = f"logs/{args.model_save_dir}_metrics.jsonl"
         #####
         main(args)
     except Exception as e:
