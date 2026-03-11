@@ -175,6 +175,28 @@ def main(args) -> None:
     logging.info("name_head:")
     print("name_head:", name_head)
     if args.use_lora:
+        # Hancy：下面是新增的用于支持Lora控制的部分，主要是根据传入的参数构建LoraConfig
+        target_modules = target_map.get(name_head, None)
+        if args.lora_target_modules:
+            target_modules = [x.strip() for x in args.lora_target_modules.split(",") if x.strip()]
+        
+        layers_to_transform = None
+        if args.lora_layers_to_transform:
+            layers_to_transform = [int(x.strip()) for x in args.lora_layers_to_transform.split(",") if x.strip().isdigit()]
+        
+        peft_config = LoraConfig(
+            task_type=TaskType.CAUSAL_LM,
+            inference_mode=False,  # 训练模式
+            r=args.lora_r,
+            lora_alpha=args.lora_alpha,
+            target_modules=target_modules,
+            layers_to_transform=layers_to_transform,
+            fan_in_fan_out=args.fan_in_fan_out,
+            use_rslora=args.use_rslora,
+        )
+        ###
+        
+        '''下面是老代码
         peft_config = LoraConfig(
             task_type=TaskType.CAUSAL_LM,
             inference_mode=False,  # 训练模式
@@ -186,6 +208,7 @@ def main(args) -> None:
         logging.info(f"target_modules: {target_map[name_head]} \n {peft_config}") # 看一下LoRA配置情况
         print("LoRA config:", peft_config)
         model = get_peft_model(model, peft_config)
+        '''
     # 转移到GPU
     model.to(device)
 
@@ -451,9 +474,20 @@ if __name__ == "__main__":
         default="logs/default.log",
         help="Log file name",
     )
+
+    # Hancy：下面是新增的传入参数，用于控制LoRA 
+    parser.add_argument("--lora_r", type=int, default=8)
+    parser.add_argument("--lora_alpha", type=int, default=16)
+    parser.add_argument("--lora_dropout", type=float, default=0.1)
+    parser.add_argument("--lora_target_modules", type=str, default=None)
+    parser.add_argument("--lora_layers_to_transform", type=str, default=None)
+    parser.add_argument("--use_rslora", action="store_true")
+    parser.add_argument("--fan_in_fan_out", action="store_true")
+    ### 
+
     args = parser.parse_args()
 
-    # 此处是gpt给出的修改多进程写同日志文件问题的方案
+    # Hancy：此处是gpt给出的修改多进程写同日志文件问题的方案
     rank = int(os.environ.get("RANK", "0"))
     args.log_file = args.log_file.replace(".log", f".rank{rank}.log")
     #####

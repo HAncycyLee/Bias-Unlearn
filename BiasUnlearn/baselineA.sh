@@ -15,4 +15,5 @@ CUDA_VISIBLE_DEVICES=0 accelerate launch train.py \
   --ster_weight 0.5 \
   --anti_weight 0.3 \
   --kl_weight 0.2 \
-  --mix_anti
+  --mix_anti \
+  --fan_in_fan_out \

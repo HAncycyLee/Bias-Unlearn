@@ -1,3 +1,5 @@
+# 这个文件适用于评估模型基础表现
+
 import json, os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
