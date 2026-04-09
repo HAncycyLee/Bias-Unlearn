@@ -1,0 +1,11 @@
+python train_mqa.py \
+      --train_jsonl mqa_outputs/mqa_rule_choice.jsonl \
+      --model_name_or_path Qwen/Qwen2.5-7B \
+      --output_dir outputs/mqa_rule_choice_qwen7b \
+      --num_train_epochs 3 \
+      --per_device_train_batch_size 2 \
+      --gradient_accumulation_steps 8 \
+      --learning_rate 2e-5 \
+      --max_length 1024 \
+      --use_lora \
+      --lora_target_modules q_proj,k_proj,v_proj,o_proj
